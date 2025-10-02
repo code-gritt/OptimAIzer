@@ -26,7 +26,6 @@ export const Header = () => {
 
   useEffect(() => {
     const closeHamburgerMenu = () => setIsOpen(false);
-
     window.addEventListener('orientationchange', closeHamburgerMenu);
     window.addEventListener('resize', closeHamburgerMenu);
 
@@ -37,60 +36,81 @@ export const Header = () => {
   }, []);
 
   return (
-    <header className="fixed left-0 top-0 z-10 w-full border-b border-white-a08 backdrop-blur-[12px]">
-      <Container className="flex h-[var(--navigation-height)] items-center">
-        <Link className="flex items-center text-md font-medium" href="/">
-          <Logo className="mr-4 h-[1.8rem] w-[1.8rem]" /> OptimAIzer
+    <header className="fixed left-0 top-0 z-50 w-full border-b border-white-a08 bg-background/80 backdrop-blur-[12px]">
+      <Container className="flex h-[var(--navigation-height)] items-center justify-between">
+        {/* Logo */}
+        <Link href="/" className="flex items-center text-lg font-semibold">
+          <Logo className="mr-3 h-6 w-6" />
+          OptimAIzer
         </Link>
 
-        <div
-          className={classNames(
-            'transition-[visibility] md:visible',
-            isOpen ? 'visible ' : 'invisible delay-500'
-          )}
-        >
-          <nav
-            className={classNames(
-              'fixed left-0 top-[var(--navigation-height)] h-[calc(100vh_-_var(--navigation-height))] w-full overflow-auto bg-background transition-opacity duration-300 ease-out md:relative md:top-0 md:block md:h-full md:w-auto md:overflow-hidden md:bg-transparent md:font-medium md:opacity-100 ',
-              isOpen ? 'opacity-100' : 'opacity-0'
-            )}
-          >
-            <ul className="flex h-full w-full flex-col md:w-auto md:flex-row">
-              {navLinks.map(({ href, title }, idx) => (
-                <li
-                  key={idx}
-                  className="border-b border-grey-dark px-6 text-md font-medium md:ml-6 md:border-none md:px-0 md:text-sm"
-                >
-                  <Link
-                    href={href}
-                    className={classNames(
-                      'inline-flex h-[var(--navigation-height)] w-full items-center transition-[color,transform] duration-200 hover:text-grey md:translate-y-0',
-                      isOpen ? 'translate-y-0' : 'translate-y-[1rem]'
-                    )}
-                  >
-                    {title}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        </div>
+        {/* Desktop nav */}
+        {/* <nav className="hidden space-x-8 text-sm font-medium md:flex">
+          {navLinks.map((link, idx) => (
+            <Link
+              key={idx}
+              href={link.href}
+              className="transition-colors hover:text-white"
+            >
+              {link.title}
+            </Link>
+          ))}
+        </nav> */}
 
-        <div className="ml-auto flex h-full items-center">
-          <Link href="/login" className="mr-6 text-sm">
+        {/* Desktop actions */}
+        <div className="hidden items-center space-x-4 md:flex">
+          <Link href="/login" className="text-sm hover:text-white">
             Log in
           </Link>
-          <Button href="/signup">Sign Up</Button>
+          <Button href="/signup" size="small">
+            Sign Up
+          </Button>
         </div>
 
+        {/* Hamburger button */}
         <button
-          className="ml-6 md:hidden"
+          className="p-2 md:hidden"
           onClick={() => setIsOpen((prev) => !prev)}
         >
-          <span className="sr-only">Toggle Menu</span>
+          <span className="sr-only">Toggle menu</span>
           <Hamburger />
         </button>
       </Container>
+
+      {/* Mobile menu */}
+      <div
+        className={classNames(
+          'transition-max-h w-full overflow-hidden bg-background/95 backdrop-blur-md duration-300 md:hidden',
+          isOpen ? 'max-h-screen' : 'max-h-0'
+        )}
+      >
+        {/* <ul className="flex flex-col space-y-4 px-6 py-4 text-lg font-medium">
+          {navLinks.map((link, idx) => (
+            <li key={idx}>
+              <Link
+                href={link.href}
+                className="block w-full py-2 transition-colors hover:text-white"
+                onClick={() => setIsOpen(false)}
+              >
+                {link.title}
+              </Link>
+            </li>
+          ))}
+        </ul> */}
+
+        <div className="flex flex-col space-y-3 border-t border-white-a08 px-6 py-4">
+          <Link
+            href="/login"
+            className="py-2 text-center text-sm transition-colors hover:text-white"
+            onClick={() => setIsOpen(false)}
+          >
+            Log in
+          </Link>
+          <Button href="/signup" size="small" className="w-full">
+            Sign Up
+          </Button>
+        </div>
+      </div>
     </header>
   );
 };
