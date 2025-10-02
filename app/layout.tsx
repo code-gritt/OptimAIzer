@@ -7,9 +7,9 @@ import './globals.css';
 const open_sans = Open_Sans({ subsets: ['latin'] });
 
 export const metadata = {
-  title: 'Linear LandingPage',
+  title: 'OptimAIzer | AI-Powered Code Review & Debugging',
   description:
-    "Linear's landing page recreated by https://twitter.com/rogue_kitten404",
+    'OptimAIzer is a SaaS platform for developers that provides AI-powered code review, debugging, and optimization using Retrieval-Augmented Generation (RAG).',
 };
 
 export default function RootLayout({
@@ -18,17 +18,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang='en' className={open_sans.className}>
+    <html lang="en" className={open_sans.className}>
       <head>
         <meta
-          name='viewport'
-          content='width=device-width, height=device-height, initial-scale=1'
+          name="viewport"
+          content="width=device-width, height=device-height, initial-scale=1"
         />
       </head>
       <body>
         <div>
           <Header />
-          <main className='mb-16 overflow-hidden bg-page-gradient pt-[var(--navigation-height)]'>
+          <main className="mb-16 overflow-hidden bg-page-gradient pt-[var(--navigation-height)]">
             {children}
           </main>
           <Footer />

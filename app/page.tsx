@@ -16,7 +16,7 @@ export default function Home() {
         <HomePageHero />
       </Container>
 
-      <Container className='mt-[12.8rem] text-center md:mt-[25.6rem]'>
+      <Container className="mt-[12.8rem] text-center md:mt-[25.6rem]">
         <Clients />
       </Container>
       <StarComponent />

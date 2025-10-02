@@ -11,22 +11,17 @@ import {
 
 export const IssueTracking = () => {
   return (
-    <Features color='194,97,254' secondaryColor='53,42,79'>
-      {/* <Features.Title>
-        Issue tracking <br />
-        {''}
-        you{"'"}ll enjoy using
-      </Features.Title> */}
+    <Features color="194,97,254" secondaryColor="53,42,79">
       <Features.Main
-        text='Create tasks in seconds, discuss issues in context, and breeze through your work in views tailored to you and your team.'
-        maxWidth='60rem'
-        image='/image/issues.webp'
-        imageSize='small'
+        text="Create code review tasks in seconds, discuss bugs in context, and streamline workflows with views tailored to your team."
+        maxWidth="60rem"
+        image="/image/issues.webp"
+        imageSize="small"
         title={
           <>
-            Issue tracking <br />
+            Code & Bug Management <br />
             {''}
-            you{"'"}ll enjoy using
+            made easy
           </>
         }
       />
@@ -34,33 +29,33 @@ export const IssueTracking = () => {
         features={[
           {
             icon: ParentSubIcon,
-            title: 'Parent and sub-issues.',
-            text: 'Break larger takss into smaller issues',
+            title: 'Hierarchical issues.',
+            text: 'Break large code problems into smaller actionable tasks.',
           },
           {
             icon: AutomatedBacklogIcon,
-            title: 'Automated backlog.',
-            text: 'Linear will auto-close and auto-archive issues.',
+            title: 'Automated tracking.',
+            text: 'OptimAIzer auto-updates issue status based on analysis results.',
           },
           {
             icon: WorkflowsIcon,
-            title: 'Custom workflows',
-            text: 'Define unique issue states for each team.',
+            title: 'Custom workflows.',
+            text: 'Define unique states for bug resolution and code reviews.',
           },
           {
             icon: CustomViewsIcon,
-            title: 'Filters and custom views.',
-            text: "See only what's relevant for you.",
+            title: 'Filters and views.',
+            text: 'Focus on the code and issues that matter most to you.',
           },
           {
             icon: DiscussionIcon,
-            title: 'Discussion.',
-            text: 'Collaborate on issues without losing context.',
+            title: 'Contextual discussions.',
+            text: 'Collaborate directly on code snippets without losing context.',
           },
           {
             icon: IssuesIcon,
-            title: 'Issue templates.',
-            text: 'Guide your team to write effective issues.',
+            title: 'Templates for reports.',
+            text: 'Guide your team to submit clear, actionable bug reports.',
           },
         ]}
       />
@@ -69,15 +64,15 @@ export const IssueTracking = () => {
           {
             image: '/image/card-board.webp',
             imageClass: 'top-[50%] md:top-[40%] w-[200%]',
-            title: 'List and board',
-            text: 'Switch between list and board layout to view work from any angle.',
+            title: 'List and board views',
+            text: 'Switch between list and board layouts to track code issues and tasks efficiently.',
           },
           {
             image: '/image/card-views.webp',
             imageClass:
               'top-[40%] left-[12px] md:top-[34%] md:left-[24px] w-[110%]',
-            title: 'Make it yours',
-            text: 'Quickly apply filters and operators to refine your issue lists and create custom views.',
+            title: 'Customizable workflows',
+            text: 'Apply filters and operators to organize code reviews and bug tracking the way your team prefers.',
           },
         ]}
       />

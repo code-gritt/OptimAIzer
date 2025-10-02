@@ -10,10 +10,9 @@ import { Logo } from './icons/logo';
 
 const navLinks = [
   { title: 'Features', href: '/' },
-  { title: 'Methods', href: '/' },
-  { title: 'Customers', href: '/', hidden: true },
-  { title: 'ChangeLog', href: '/', hidden: true },
-  { title: 'Intergations', href: '/', hidden: true },
+  { title: 'Workflows', href: '/' },
+  { title: 'Roadmaps', href: '/' },
+  { title: 'Integrations', href: '/' },
   { title: 'Pricing', href: '/' },
   { title: 'Company', href: '/' },
 ] as const;
@@ -25,7 +24,6 @@ export const Header = () => {
     document.querySelector('html')?.classList.toggle('overflow-hidden', isOpen);
   }, [isOpen]);
 
-  // edge case when the menu is open and then the user re-sizes the screen, it would lock the scroll
   useEffect(() => {
     const closeHamburgerMenu = () => setIsOpen(false);
 
@@ -36,12 +34,13 @@ export const Header = () => {
       window.removeEventListener('orientationchange', closeHamburgerMenu);
       window.removeEventListener('resize', closeHamburgerMenu);
     };
-  }, [setIsOpen]);
+  }, []);
+
   return (
-    <header className='fixed left-0 top-0 z-10 w-full border-b border-white-a08 backdrop-blur-[12px]'>
-      <Container className='flex h-[var(--navigation-height)] items-center'>
-        <Link className='flex items-center text-md font-medium' href='/'>
-          <Logo className='mr-4 h-[1.8rem] w-[1.8rem]' /> Linear
+    <header className="fixed left-0 top-0 z-10 w-full border-b border-white-a08 backdrop-blur-[12px]">
+      <Container className="flex h-[var(--navigation-height)] items-center">
+        <Link className="flex items-center text-md font-medium" href="/">
+          <Logo className="mr-4 h-[1.8rem] w-[1.8rem]" /> OptimAIzer
         </Link>
 
         <div
@@ -56,14 +55,11 @@ export const Header = () => {
               isOpen ? 'opacity-100' : 'opacity-0'
             )}
           >
-            <ul className='flex h-full w-full flex-col md:w-auto md:flex-row'>
-              {navLinks.map(({ href, title, ...props }, idx) => (
+            <ul className="flex h-full w-full flex-col md:w-auto md:flex-row">
+              {navLinks.map(({ href, title }, idx) => (
                 <li
                   key={idx}
-                  className={classNames(
-                    'border-b border-grey-dark px-6 text-md font-medium md:ml-6 md:border-none md:px-0 md:text-sm',
-                    'hidden' in props && 'md:hidden lg:block'
-                  )}
+                  className="border-b border-grey-dark px-6 text-md font-medium md:ml-6 md:border-none md:px-0 md:text-sm"
                 >
                   <Link
                     href={href}
@@ -80,18 +76,18 @@ export const Header = () => {
           </nav>
         </div>
 
-        <div className='ml-auto flex h-full items-center'>
-          <Link href='#' className='mr-6 text-sm'>
+        <div className="ml-auto flex h-full items-center">
+          <Link href="/login" className="mr-6 text-sm">
             Log in
           </Link>
-          <Button href='#'>Sign Up</Button>
+          <Button href="/signup">Sign Up</Button>
         </div>
 
         <button
-          className='ml-6 md:hidden'
+          className="ml-6 md:hidden"
           onClick={() => setIsOpen((prev) => !prev)}
         >
-          <span className='sr-only'>Toggle Menu</span>
+          <span className="sr-only">Toggle Menu</span>
           <Hamburger />
         </button>
       </Container>

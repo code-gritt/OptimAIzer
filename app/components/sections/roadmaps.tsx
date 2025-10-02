@@ -11,63 +11,63 @@ import {
 export const Roadmaps = () => {
   return (
     <div>
-      <Features color='0,225,244' secondaryColor='31,49,64'>
+      <Features color="0,225,244" secondaryColor="31,49,64">
         <Features.Main
-          text='Plan visually, collaborate in cross-team projects, and make better decisions with progress insights and project updates.'
+          text="Plan AI-powered review cycles, collaborate across teams, and make better decisions with actionable code insights and progress updates."
           title={
             <>
-              Set direction <br /> with Roadmaps
+              Guide Development <br /> with Roadmaps
             </>
           }
-          image='/image/roadmap.webp'
-          imageSize='large'
-          maxWidth='60rem'
+          image="/image/roadmap.webp"
+          imageSize="large"
+          maxWidth="60rem"
         />
         <Features.Grid
           features={[
             {
               icon: MultiTeamIcon,
-              title: 'Multi team projects.',
-              text: 'Collaborate across teams and departments.',
+              title: 'Cross-team collaboration.',
+              text: 'Coordinate code reviews and bug fixes across multiple teams.',
             },
             {
               icon: DocumentIcon,
-              title: 'Project Documents.',
-              text: 'Write project briefs and specs right in linear.',
+              title: 'Documentation in context.',
+              text: 'Attach specs, analysis notes, and code docs directly to tasks.',
             },
             {
               icon: RoadMapIcon,
-              title: 'Custom Roadmaps.',
-              text: 'Organize projects across multiple roadmaps.',
+              title: 'Custom development roadmaps.',
+              text: 'Visualize progress across sprints, releases, and AI analysis cycles.',
             },
             {
               icon: TimelineIcon,
-              title: 'Timeline View.',
-              text: 'Visulise the product journey ahead.',
+              title: 'Timeline view.',
+              text: 'Track upcoming reviews, optimizations, and project milestones.',
             },
             {
               icon: InsightIcon,
-              title: 'Project Insights.',
-              text: 'Trake scope, velocity, and progress over time.',
+              title: 'Analysis insights.',
+              text: 'Monitor velocity, coverage, and code health over time.',
             },
             {
               icon: NotificationIcon,
-              title: 'Personal Notifications.',
-              text: 'Stay in loop on project activity and updates.',
+              title: 'Personal alerts.',
+              text: 'Stay updated on assigned reviews, analysis results, and team activity.',
             },
           ]}
         />
         <Features.Card
           features={[
             {
-              title: 'Project Updates',
-              text: 'Keep everyone up-to-date on the health and progress of projects.',
+              title: 'Real-time updates',
+              text: 'Keep your team informed on the health and progress of codebases and reviews.',
               image: '/image/card-updates.webp',
               imageClass: 'md:top-[40%] top-[50%] left-[7%] max-w-[100%]',
             },
             {
-              title: 'Focus on the big picture',
-              text: 'Explore every company project in one view to easily identify what needs attention.',
+              title: 'Focus on priorities',
+              text: 'Visualize all ongoing code reviews in one view to easily identify what needs attention.',
               image: '/image/card-roadmaps.webp',
               imageClass: 'md:top-[40%] top-[50%] left-[2%] max-w-[100%]',
             },
