@@ -1,12 +1,12 @@
-import classNames from 'classnames';
-import { Button, ButtonHighlight } from '../button';
-import { CommandMenu } from '../command-menu';
-import { Container } from '../container';
-import { ChevronRight } from '../icons/chevronRight';
-import { ModernTeams } from '../illustrations/modern';
-import { Thunder } from '../illustrations/thunder';
-import { KeyboardShortcuts } from '../keyboard-shortcuts';
-import { UspSubTitle, UspTitle, UspWrapper } from '../usp-wrapper';
+import classNames from "classnames";
+import { Button, ButtonHighlight } from "../button";
+import { CommandMenu } from "../command-menu";
+import { Container } from "../container";
+import { ChevronRight } from "../icons/chevronRight";
+import { ModernTeams } from "../illustrations/modern";
+import { Thunder } from "../illustrations/thunder";
+import { KeyboardShortcuts } from "../keyboard-shortcuts";
+import { UspSubTitle, UspTitle, UspWrapper } from "../usp-wrapper";
 
 export const UnlikeAnyTool = () => {
   return (
@@ -34,7 +34,7 @@ export const UnlikeAnyTool = () => {
             </UspSubTitle>
           </UspWrapper>
           <UspWrapper className="col-span-2 [--order:1]">
-            <div className={classNames('thunder-mask absolute top-[-9.2rem]')}>
+            <div className={classNames("thunder-mask absolute top-[-9.2rem]")}>
               <Thunder />
             </div>
             <UspTitle>Blazing fast analysis</UspTitle>
@@ -45,19 +45,7 @@ export const UnlikeAnyTool = () => {
           </UspWrapper>
           <UspWrapper className="group col-span-2 [--order:2]">
             <ModernTeams />
-            <Button
-              href="/"
-              size="small"
-              variant="secondary"
-              className={classNames(
-                'absolute bottom-[20rem] md:translate-y-5 md:opacity-0 md:duration-200 md:group-hover:translate-y-0 md:group-hover:opacity-100'
-              )}
-            >
-              <ButtonHighlight className="-ml-2 mr-2">
-                OptimAIzer Workflow
-              </ButtonHighlight>
-              Collaborative Code Review <ChevronRight className="ml-2" />
-            </Button>
+
             <UspTitle>Built for modern development teams</UspTitle>
             <UspSubTitle>
               Streamline code reviews, debugging, and team collaboration in one
