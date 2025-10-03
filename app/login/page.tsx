@@ -22,13 +22,13 @@ export default function LoginPage() {
     setError("");
 
     try {
-      // login returns { token: string }
-      const { token } = await login(email, password);
+      // login returns token string
+      const token = await login(email, password);
 
-      // fetch user using token
+      // fetch current user using token
       const user = await getMe(token);
 
-      // set user and token in store
+      // set auth state
       setAuth(user, token);
 
       // navigate to dashboard

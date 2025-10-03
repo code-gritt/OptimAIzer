@@ -22,16 +22,16 @@ export default function SignupPage() {
     setError("");
 
     try {
-      // Step 1: register returns User object
+      // Register returns the User object
       const user = await register(email, password);
 
-      // Step 2: login returns { token: string }
-      const { token } = await login(email, password);
+      // Login returns token as string
+      const token = await login(email, password);
 
-      // Step 3: set user and token in auth store
+      // Set user and token in store
       setAuth(user, token);
 
-      // Step 4: redirect to dashboard
+      // Navigate to dashboard
       router.push("/dashboard");
     } catch (err: any) {
       setError(err.message || "Signup failed");

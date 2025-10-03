@@ -15,104 +15,96 @@ export interface Activity {
   };
 }
 
-const AUTH_API_URL = "https://optimaizer-api.onrender.com/graphql/auth";
-const ACTIVITY_API_URL = "https://optimaizer-api.onrender.com/graphql/activity";
+// Single GraphQL endpoint
+const GRAPHQL_API_URL = "https://optimaizer-api.onrender.com/graphql";
 
-// Returns { token: string } instead of string
-export async function login(
-  email: string,
-  password: string
-): Promise<{ token: string }> {
-  const response = await fetch(AUTH_API_URL, {
+// Generic fetch function
+async function graphqlRequest<T>(
+  query: string,
+  variables?: Record<string, any>,
+  token?: string
+): Promise<T> {
+  const response = await fetch(GRAPHQL_API_URL, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      query: `
-        mutation Login($email: String!, $password: String!) {
-          login(email: $email, password: $password)
-        }
-      `,
-      variables: { email, password },
-    }),
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: JSON.stringify({ query, variables }),
   });
+
   const { data, errors } = await response.json();
   if (errors) throw new Error(errors[0].message);
-  return { token: data.login };
+  return data;
+}
+
+// AUTH FUNCTIONS
+export async function login(email: string, password: string): Promise<string> {
+  const query = `
+    mutation Login($email: String!, $password: String!) {
+      login(email: $email, password: $password)
+    }
+  `;
+  const data = await graphqlRequest<{ login: string }>(query, {
+    email,
+    password,
+  });
+  return data.login;
 }
 
 export async function register(email: string, password: string): Promise<User> {
-  const response = await fetch(AUTH_API_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      query: `
-        mutation Register($email: String!, $password: String!) {
-          register(email: $email, password: $password) {
-            id
-            email
-            role
-            credits
-          }
-        }
-      `,
-      variables: { email, password },
-    }),
+  const query = `
+    mutation Register($email: String!, $password: String!) {
+      register(email: $email, password: $password) {
+        id
+        email
+        role
+        credits
+      }
+    }
+  `;
+  const data = await graphqlRequest<{ register: User }>(query, {
+    email,
+    password,
   });
-  const { data, errors } = await response.json();
-  if (errors) throw new Error(errors[0].message);
   return data.register;
 }
 
 export async function getMe(token: string): Promise<User> {
-  const response = await fetch(AUTH_API_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({
-      query: `
-        query {
-          me {
-            id
-            email
-            role
-            credits
-          }
-        }
-      `,
-    }),
-  });
-  const { data, errors } = await response.json();
-  if (errors) throw new Error(errors[0].message);
+  const query = `
+    query {
+      me {
+        id
+        email
+        role
+        credits
+      }
+    }
+  `;
+  const data = await graphqlRequest<{ me: User }>(query, undefined, token);
   return data.me;
 }
 
+// ACTIVITY FUNCTIONS
 export async function getActivities(token: string): Promise<Activity[]> {
-  const response = await fetch(ACTIVITY_API_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({
-      query: `
-        query {
-          activities {
-            id
-            user_id
-            activity
-            timestamp
-            user {
-              email
-            }
-          }
+  const query = `
+    query {
+      activities {
+        id
+        user_id
+        activity
+        timestamp
+        user {
+          email
         }
-      `,
-    }),
-  });
-  const { data, errors } = await response.json();
-  if (errors) throw new Error(errors[0].message);
+      }
+    }
+  `;
+  const data = await graphqlRequest<{ activities: Activity[] }>(
+    query,
+    undefined,
+    token
+  );
   return data.activities;
 }
 
@@ -120,31 +112,24 @@ export async function createActivity(
   token: string,
   activity: string
 ): Promise<Activity> {
-  const response = await fetch(ACTIVITY_API_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({
-      query: `
-        mutation CreateActivity($activity: String!) {
-          create_activity(activity: $activity) {
-            id
-            user_id
-            activity
-            timestamp
-            user {
-              email
-            }
-          }
+  const query = `
+    mutation CreateActivity($activity: String!) {
+      create_activity(activity: $activity) {
+        id
+        user_id
+        activity
+        timestamp
+        user {
+          email
         }
-      `,
-      variables: { activity },
-    }),
-  });
-  const { data, errors } = await response.json();
-  if (errors) throw new Error(errors[0].message);
+      }
+    }
+  `;
+  const data = await graphqlRequest<{ create_activity: Activity }>(
+    query,
+    { activity },
+    token
+  );
   return data.create_activity;
 }
 
@@ -153,54 +138,40 @@ export async function updateActivity(
   id: number,
   activity: string
 ): Promise<Activity> {
-  const response = await fetch(ACTIVITY_API_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({
-      query: `
-        mutation UpdateActivity($id: Int!, $activity: String!) {
-          update_activity(id: $id, activity: $activity) {
-            id
-            user_id
-            activity
-            timestamp
-            user {
-              email
-            }
-          }
+  const query = `
+    mutation UpdateActivity($id: Int!, $activity: String!) {
+      update_activity(id: $id, activity: $activity) {
+        id
+        user_id
+        activity
+        timestamp
+        user {
+          email
         }
-      `,
-      variables: { id, activity },
-    }),
-  });
-  const { data, errors } = await response.json();
-  if (errors) throw new Error(errors[0].message);
+      }
+    }
+  `;
+  const data = await graphqlRequest<{ update_activity: Activity }>(
+    query,
+    { id, activity },
+    token
+  );
   return data.update_activity;
 }
 
 export async function deleteActivity(token: string, id: number): Promise<void> {
-  const response = await fetch(ACTIVITY_API_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({
-      query: `
-        mutation DeleteActivity($id: Int!) {
-          delete_activity(id: $id) {
-            success
-          }
-        }
-      `,
-      variables: { id },
-    }),
-  });
-  const { data, errors } = await response.json();
-  if (errors) throw new Error(errors[0].message);
+  const query = `
+    mutation DeleteActivity($id: Int!) {
+      delete_activity(id: $id) {
+        success
+      }
+    }
+  `;
+  const data = await graphqlRequest<{ delete_activity: { success: boolean } }>(
+    query,
+    { id },
+    token
+  );
   if (!data.delete_activity.success)
     throw new Error("Failed to delete activity");
 }
