@@ -18,7 +18,11 @@ export interface Activity {
 const AUTH_API_URL = "https://optimaizer-api.onrender.com/graphql/auth";
 const ACTIVITY_API_URL = "https://optimaizer-api.onrender.com/graphql/activity";
 
-export async function login(email: string, password: string): Promise<string> {
+// Returns { token: string } instead of string
+export async function login(
+  email: string,
+  password: string
+): Promise<{ token: string }> {
   const response = await fetch(AUTH_API_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -33,7 +37,7 @@ export async function login(email: string, password: string): Promise<string> {
   });
   const { data, errors } = await response.json();
   if (errors) throw new Error(errors[0].message);
-  return data.login;
+  return { token: data.login };
 }
 
 export async function register(email: string, password: string): Promise<User> {

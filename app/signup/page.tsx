@@ -19,13 +19,22 @@ export default function SignupPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError("");
+
     try {
-      const user = await register(email, password); // Returns user object
-      const { token } = await login(email, password); // Returns token
+      // Step 1: register returns User object
+      const user = await register(email, password);
+
+      // Step 2: login returns { token: string }
+      const { token } = await login(email, password);
+
+      // Step 3: set user and token in auth store
       setAuth(user, token);
+
+      // Step 4: redirect to dashboard
       router.push("/dashboard");
     } catch (err: any) {
-      setError(err.message);
+      setError(err.message || "Signup failed");
     } finally {
       setLoading(false);
     }

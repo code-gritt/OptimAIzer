@@ -19,13 +19,22 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError("");
+
     try {
-      const { token } = await login(email, password); // token string only
-      const user = await getMe(token); // fetch current user
+      // login returns { token: string }
+      const { token } = await login(email, password);
+
+      // fetch user using token
+      const user = await getMe(token);
+
+      // set user and token in store
       setAuth(user, token);
+
+      // navigate to dashboard
       router.push("/dashboard");
     } catch (err: any) {
-      setError(err.message);
+      setError(err.message || "Login failed");
     } finally {
       setLoading(false);
     }
