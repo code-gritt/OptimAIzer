@@ -33,9 +33,11 @@ async function graphqlAuthRequest<T>(
     body: JSON.stringify({ query, variables }),
   });
 
-  const { data, errors } = await response.json();
-  if (errors) throw new Error(errors[0].message);
-  return data;
+  const result = await response.json();
+  if (!response.ok)
+    throw new Error(result?.errors?.[0]?.message || "Network error");
+  if (result.errors) throw new Error(result.errors[0].message);
+  return result.data as T;
 }
 
 // Generic fetch function for activity
@@ -53,9 +55,11 @@ async function graphqlActivityRequest<T>(
     body: JSON.stringify({ query, variables }),
   });
 
-  const { data, errors } = await response.json();
-  if (errors) throw new Error(errors[0].message);
-  return data;
+  const result = await response.json();
+  if (!response.ok)
+    throw new Error(result?.errors?.[0]?.message || "Network error");
+  if (result.errors) throw new Error(result.errors[0].message);
+  return result.data as T;
 }
 
 // AUTH FUNCTIONS
@@ -69,6 +73,7 @@ export async function login(email: string, password: string): Promise<string> {
     email,
     password,
   });
+  if (!data.login) throw new Error("Login failed: No token returned");
   return data.login;
 }
 
@@ -87,6 +92,8 @@ export async function register(email: string, password: string): Promise<User> {
     email,
     password,
   });
+  if (!data.register)
+    throw new Error("Registration failed: No user data returned");
   return data.register;
 }
 
@@ -102,6 +109,7 @@ export async function getMe(token: string): Promise<User> {
     }
   `;
   const data = await graphqlAuthRequest<{ me: User }>(query, undefined, token);
+  if (!data.me) throw new Error("Failed to fetch user data");
   return data.me;
 }
 
@@ -125,6 +133,7 @@ export async function getActivities(token: string): Promise<Activity[]> {
     undefined,
     token
   );
+  if (!data.activities) return [];
   return data.activities;
 }
 
@@ -150,6 +159,7 @@ export async function createActivity(
     { activity },
     token
   );
+  if (!data.create_activity) throw new Error("Failed to create activity");
   return data.create_activity;
 }
 
@@ -176,6 +186,7 @@ export async function updateActivity(
     { id, activity },
     token
   );
+  if (!data.update_activity) throw new Error("Failed to update activity");
   return data.update_activity;
 }
 
@@ -190,6 +201,6 @@ export async function deleteActivity(token: string, id: number): Promise<void> {
   const data = await graphqlActivityRequest<{
     delete_activity: { success: boolean };
   }>(query, { id }, token);
-  if (!data.delete_activity.success)
+  if (!data.delete_activity?.success)
     throw new Error("Failed to delete activity");
 }

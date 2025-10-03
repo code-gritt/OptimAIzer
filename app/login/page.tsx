@@ -22,19 +22,13 @@ export default function LoginPage() {
     setError("");
 
     try {
-      // Login returns token string
       const token = await login(email, password);
-
-      // Fetch current user using token
       const user = await getMe(token);
-
-      // Set auth state
       setAuth(user, token);
-
-      // Navigate to dashboard
       router.push("/dashboard");
     } catch (err: any) {
       setError(err.message || "Login failed");
+      console.error("Login error:", err); // Debug log
     } finally {
       setLoading(false);
     }
@@ -55,7 +49,6 @@ export default function LoginPage() {
           <HeroSubtitle className="translate-y-[-1rem] animate-fade-in opacity-0 [--animation-delay:400ms]">
             Access your AI-powered code review and debugging tools.
           </HeroSubtitle>
-
           <form
             onSubmit={handleSubmit}
             className="mx-auto mt-8 max-w-md translate-y-[-1rem] animate-fade-in opacity-0 [--animation-delay:600ms]"
@@ -76,7 +69,6 @@ export default function LoginPage() {
                 required
               />
             </div>
-
             <div className="mb-4">
               <label
                 htmlFor="password"
@@ -93,9 +85,7 @@ export default function LoginPage() {
                 required
               />
             </div>
-
             {error && <p className="text-red-500 mb-4 text-sm">{error}</p>}
-
             <Button
               type="submit"
               variant="primary"
@@ -104,7 +94,6 @@ export default function LoginPage() {
             >
               Log In
             </Button>
-
             <Button
               type="button"
               variant="secondary"
@@ -115,7 +104,6 @@ export default function LoginPage() {
               Sign in with Google
             </Button>
           </form>
-
           <p className="mt-4 translate-y-[-1rem] animate-fade-in text-center text-sm text-white/80 opacity-0 [--animation-delay:800ms]">
             Don’t have an account?{" "}
             <a href="/signup" className="text-[#ac8eff] hover:underline">
