@@ -20,8 +20,8 @@ export default function SignupPage() {
     e.preventDefault();
     setLoading(true);
     try {
-      const user = await register(email, password); // Returns UserType
-      const { token } = await login(email, password); // Returns token only
+      const user = await register(email, password); // Returns user object
+      const { token } = await login(email, password); // Returns token
       setAuth(user, token);
       router.push("/dashboard");
     } catch (err: any) {
@@ -29,6 +29,10 @@ export default function SignupPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleGoogleLogin = () => {
+    window.location.href = "https://optimaizer-api.onrender.com/oauth/google";
   };
 
   return (
@@ -86,6 +90,15 @@ export default function SignupPage() {
               className="w-full"
             >
               Sign Up
+            </Button>
+            <Button
+              type="button"
+              variant="secondary"
+              size="large"
+              className="mt-4 w-full"
+              onClick={handleGoogleLogin}
+            >
+              Sign in with Google
             </Button>
           </form>
           <p className="mt-4 translate-y-[-1rem] animate-fade-in text-center text-sm text-white/80 opacity-0 [--animation-delay:800ms]">

@@ -31,6 +31,10 @@ export default function LoginPage() {
     }
   };
 
+  const handleGoogleLogin = () => {
+    window.location.href = "https://optimaizer-api.onrender.com/oauth/google";
+  };
+
   return (
     <>
       <Loader show={loading} />
@@ -86,6 +90,15 @@ export default function LoginPage() {
               className="w-full"
             >
               Log In
+            </Button>
+            <Button
+              type="button"
+              variant="secondary"
+              size="large"
+              className="mt-4 w-full"
+              onClick={handleGoogleLogin}
+            >
+              Sign in with Google
             </Button>
           </form>
           <p className="mt-4 translate-y-[-1rem] animate-fade-in text-center text-sm text-white/80 opacity-0 [--animation-delay:800ms]">

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Hero, HeroSubtitle, HeroTitle } from "../components/hero";
 import { Button } from "../components/button";
 import { useAuthStore } from "../../lib/store";
@@ -13,18 +13,16 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
-    if (!token) {
-      router.push("/login");
-      return;
-    }
+    const tokenFromUrl = searchParams.get("token");
 
-    const fetchUser = async () => {
+    const fetchUser = async (authToken: string) => {
       setLoading(true);
       try {
-        const userData = await getMe(token);
-        useAuthStore.setState({ user: userData });
+        const userData = await getMe(authToken);
+        useAuthStore.setState({ user: userData, token: authToken });
       } catch (err: any) {
         setError(err.message);
         useAuthStore.getState().clearAuth();
@@ -34,8 +32,17 @@ export default function DashboardPage() {
       }
     };
 
-    fetchUser();
-  }, [token, router]);
+    if (tokenFromUrl) {
+      // Handle Google OAuth redirect
+      fetchUser(tokenFromUrl);
+      router.replace("/dashboard"); // Clean up URL
+    } else if (token) {
+      // Verify existing token
+      fetchUser(token);
+    } else {
+      router.push("/login");
+    }
+  }, [token, searchParams, router]);
 
   return (
     <>
