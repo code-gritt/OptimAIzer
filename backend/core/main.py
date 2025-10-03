@@ -27,8 +27,8 @@ UserBase.metadata.create_all(bind=engine)
 ActivityBase.metadata.create_all(bind=engine)
 
 # Mount GraphQL apps
-app.include_router(auth_graphql_app, prefix="/graphql")
-app.include_router(activity_graphql_app, prefix="/graphql")
+app.mount("/graphql/auth", auth_graphql_app)
+app.mount("/graphql/activity", activity_graphql_app)
 
 # Mount OAuth routes
 app.include_router(oauth_router, prefix="/oauth")
