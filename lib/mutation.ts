@@ -15,16 +15,36 @@ export interface Activity {
   };
 }
 
-// Single GraphQL endpoint (updated to match proxy)
-const GRAPHQL_API_URL = "https://optimaizer-api.onrender.com/graphql";
+const AUTH_API_URL = "https://optimaizer-api.onrender.com/graphql/auth";
+const ACTIVITY_API_URL = "https://optimaizer-api.onrender.com/graphql/activity";
 
-// Generic fetch function
-async function graphqlRequest<T>(
+// Generic fetch function for auth
+async function graphqlAuthRequest<T>(
   query: string,
   variables?: Record<string, any>,
   token?: string
 ): Promise<T> {
-  const response = await fetch(GRAPHQL_API_URL, {
+  const response = await fetch(AUTH_API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: JSON.stringify({ query, variables }),
+  });
+
+  const { data, errors } = await response.json();
+  if (errors) throw new Error(errors[0].message);
+  return data;
+}
+
+// Generic fetch function for activity
+async function graphqlActivityRequest<T>(
+  query: string,
+  variables?: Record<string, any>,
+  token?: string
+): Promise<T> {
+  const response = await fetch(ACTIVITY_API_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -45,7 +65,7 @@ export async function login(email: string, password: string): Promise<string> {
       login(email: $email, password: $password)
     }
   `;
-  const data = await graphqlRequest<{ login: string }>(query, {
+  const data = await graphqlAuthRequest<{ login: string }>(query, {
     email,
     password,
   });
@@ -63,7 +83,7 @@ export async function register(email: string, password: string): Promise<User> {
       }
     }
   `;
-  const data = await graphqlRequest<{ register: User }>(query, {
+  const data = await graphqlAuthRequest<{ register: User }>(query, {
     email,
     password,
   });
@@ -81,7 +101,7 @@ export async function getMe(token: string): Promise<User> {
       }
     }
   `;
-  const data = await graphqlRequest<{ me: User }>(query, undefined, token);
+  const data = await graphqlAuthRequest<{ me: User }>(query, undefined, token);
   return data.me;
 }
 
@@ -100,7 +120,7 @@ export async function getActivities(token: string): Promise<Activity[]> {
       }
     }
   `;
-  const data = await graphqlRequest<{ activities: Activity[] }>(
+  const data = await graphqlActivityRequest<{ activities: Activity[] }>(
     query,
     undefined,
     token
@@ -125,7 +145,7 @@ export async function createActivity(
       }
     }
   `;
-  const data = await graphqlRequest<{ create_activity: Activity }>(
+  const data = await graphqlActivityRequest<{ create_activity: Activity }>(
     query,
     { activity },
     token
@@ -151,7 +171,7 @@ export async function updateActivity(
       }
     }
   `;
-  const data = await graphqlRequest<{ update_activity: Activity }>(
+  const data = await graphqlActivityRequest<{ update_activity: Activity }>(
     query,
     { id, activity },
     token
@@ -167,11 +187,9 @@ export async function deleteActivity(token: string, id: number): Promise<void> {
       }
     }
   `;
-  const data = await graphqlRequest<{ delete_activity: { success: boolean } }>(
-    query,
-    { id },
-    token
-  );
+  const data = await graphqlActivityRequest<{
+    delete_activity: { success: boolean };
+  }>(query, { id }, token);
   if (!data.delete_activity.success)
     throw new Error("Failed to delete activity");
 }
