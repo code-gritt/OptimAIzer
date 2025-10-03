@@ -21,7 +21,7 @@ import {
   ColumnDef,
   Row,
 } from "@tanstack/react-table";
-import { Dialog, DialogContent, DialogTrigger } from "react-dialog";
+import * as Dialog from "@radix-ui/react-dialog";
 import { Edit, Trash2 } from "lucide-react";
 import { Loader } from "../components/Loader";
 
@@ -31,6 +31,110 @@ interface Activity {
   activity: string;
   timestamp: string;
   user: { email: string };
+}
+
+// Separate EditDialog component
+function EditDialog({
+  activity,
+  token,
+  onSave,
+}: {
+  activity: Activity;
+  token: string;
+  onSave: (newActivity: string) => void;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [editActivity, setEditActivity] = useState(activity.activity);
+
+  const handleSave = async () => {
+    await updateActivity(token, activity.id, editActivity);
+    onSave(editActivity);
+    setIsOpen(false);
+  };
+
+  return (
+    <Dialog.Root open={isOpen} onOpenChange={setIsOpen}>
+      <Dialog.Trigger asChild>
+        <button>
+          <Edit className="h-5 w-5 text-[#ac8eff] hover:text-white" />
+        </button>
+      </Dialog.Trigger>
+      <Dialog.Overlay className="bg-black/50 fixed inset-0" />
+      <Dialog.Content className="bg-gray-800 fixed left-1/2 top-1/2 w-[90%] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-md p-6">
+        <Dialog.Title className="text-lg font-semibold text-white">
+          Edit Activity
+        </Dialog.Title>
+        <input
+          type="text"
+          value={editActivity}
+          onChange={(e) => setEditActivity(e.target.value)}
+          className="mt-2 w-full rounded-md border border-white-a08 bg-background/50 p-2 text-white focus:outline-none focus:ring-2 focus:ring-[#ac8eff]"
+        />
+        <div className="mt-4 flex space-x-2">
+          <Button variant="primary" size="small" onClick={handleSave}>
+            Save
+          </Button>
+          <Button
+            variant="secondary"
+            size="small"
+            onClick={() => setIsOpen(false)}
+          >
+            Cancel
+          </Button>
+        </div>
+      </Dialog.Content>
+    </Dialog.Root>
+  );
+}
+
+// Separate DeleteDialog component
+function DeleteDialog({
+  activity,
+  token,
+  onDelete,
+}: {
+  activity: Activity;
+  token: string;
+  onDelete: () => void;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleDelete = async () => {
+    await deleteActivity(token, activity.id);
+    onDelete();
+    setIsOpen(false);
+  };
+
+  return (
+    <Dialog.Root open={isOpen} onOpenChange={setIsOpen}>
+      <Dialog.Trigger asChild>
+        <button>
+          <Trash2 className="text-red-500 hover:text-red-300 h-5 w-5" />
+        </button>
+      </Dialog.Trigger>
+      <Dialog.Overlay className="bg-black/50 fixed inset-0" />
+      <Dialog.Content className="bg-gray-800 fixed left-1/2 top-1/2 w-[90%] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-md p-6">
+        <Dialog.Title className="text-lg font-semibold text-white">
+          Delete Activity
+        </Dialog.Title>
+        <p className="mt-2 text-white/80">
+          Are you sure you want to delete this activity?
+        </p>
+        <div className="mt-4 flex space-x-2">
+          <Button variant="primary" size="small" onClick={handleDelete}>
+            Confirm
+          </Button>
+          <Button
+            variant="secondary"
+            size="small"
+            onClick={() => setIsOpen(false)}
+          >
+            Cancel
+          </Button>
+        </div>
+      </Dialog.Content>
+    </Dialog.Root>
+  );
 }
 
 function DashboardContent() {
@@ -101,93 +205,28 @@ function DashboardContent() {
       header: "Actions",
       cell: ({ row }: { row: Row<Activity> }) => {
         const activity = row.original;
-        const [isEditOpen, setIsEditOpen] = useState(false);
-        const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-        const [editActivity, setEditActivity] = useState(activity.activity);
-
-        const handleEdit = async () => {
-          try {
-            await updateActivity(token!, activity.id, editActivity);
-            setActivities((prev) =>
-              prev.map((a) =>
-                a.id === activity.id ? { ...a, activity: editActivity } : a
-              )
-            );
-            setIsEditOpen(false);
-          } catch (err: any) {
-            setError(err.message);
-          }
-        };
-
-        const handleDelete = async () => {
-          try {
-            await deleteActivity(token!, activity.id);
-            setActivities((prev) => prev.filter((a) => a.id !== activity.id));
-            setIsDeleteOpen(false);
-          } catch (err: any) {
-            setError(err.message);
-          }
-        };
-
         return (
           <div className="flex space-x-2">
-            <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
-              <DialogTrigger asChild>
-                <button>
-                  <Edit className="h-5 w-5 text-[#ac8eff] hover:text-white" />
-                </button>
-              </DialogTrigger>
-              <DialogContent>
-                <h3 className="text-lg font-semibold text-white">
-                  Edit Activity
-                </h3>
-                <input
-                  type="text"
-                  value={editActivity}
-                  onChange={(e) => setEditActivity(e.target.value)}
-                  className="mt-2 w-full rounded-md border border-white-a08 bg-background/50 p-2 text-white focus:outline-none focus:ring-2 focus:ring-[#ac8eff]"
-                />
-                <div className="mt-4 flex space-x-2">
-                  <Button variant="primary" size="small" onClick={handleEdit}>
-                    Save
-                  </Button>
-                  <Button
-                    variant="secondary"
-                    size="small"
-                    onClick={() => setIsEditOpen(false)}
-                  >
-                    Cancel
-                  </Button>
-                </div>
-              </DialogContent>
-            </Dialog>
-            <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
-              <DialogTrigger asChild>
-                <button>
-                  <Trash2 className="text-red-500 hover:text-red-300 h-5 w-5" />
-                </button>
-              </DialogTrigger>
-              <DialogContent>
-                <h3 className="text-lg font-semibold text-white">
-                  Delete Activity
-                </h3>
-                <p className="mt-2 text-white/80">
-                  Are you sure you want to delete this activity?
-                </p>
-                <div className="mt-4 flex space-x-2">
-                  <Button variant="primary" size="small" onClick={handleDelete}>
-                    Confirm
-                  </Button>
-                  <Button
-                    variant="secondary"
-                    size="small"
-                    onClick={() => setIsDeleteOpen(false)}
-                  >
-                    Cancel
-                  </Button>
-                </div>
-              </DialogContent>
-            </Dialog>
+            <EditDialog
+              activity={activity}
+              token={token!}
+              onSave={(newActivity) =>
+                setActivities((prev) =>
+                  prev.map((a) =>
+                    a.id === activity.id ? { ...a, activity: newActivity } : a
+                  )
+                )
+              }
+            />
+            <DeleteDialog
+              activity={activity}
+              token={token!}
+              onDelete={() =>
+                setActivities((prev) =>
+                  prev.filter((a) => a.id !== activity.id)
+                )
+              }
+            />
           </div>
         );
       },
