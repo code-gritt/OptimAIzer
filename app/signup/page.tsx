@@ -55,15 +55,13 @@ export default function SignupPage() {
           <HeroSubtitle className="translate-y-[-1rem] animate-fade-in opacity-0 [--animation-delay:400ms]">
             Create an account to start debugging and reviewing code with AI.
           </HeroSubtitle>
+
           <form
             onSubmit={handleSubmit}
             className="mx-auto mt-8 max-w-md translate-y-[-1rem] animate-fade-in opacity-0 [--animation-delay:600ms]"
           >
             <div className="mb-4">
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-white/80"
-              >
+              <label htmlFor="email" className="block text-sm font-medium text-white/80">
                 Email
               </label>
               <input
@@ -75,11 +73,9 @@ export default function SignupPage() {
                 required
               />
             </div>
+
             <div className="mb-4">
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-white/80"
-              >
+              <label htmlFor="password" className="block text-sm font-medium text-white/80">
                 Password
               </label>
               <input
@@ -91,15 +87,13 @@ export default function SignupPage() {
                 required
               />
             </div>
+
             {error && <p className="text-red-500 mb-4 text-sm">{error}</p>}
-            <Button
-              type="submit"
-              variant="primary"
-              size="large"
-              className="w-full"
-            >
+
+            <Button type="submit" variant="primary" size="large" className="w-full">
               Sign Up
             </Button>
+
             <Button
               type="button"
               variant="secondary"
@@ -110,6 +104,7 @@ export default function SignupPage() {
               Sign in with Google
             </Button>
           </form>
+
           <p className="mt-4 translate-y-[-1rem] animate-fade-in text-center text-sm text-white/80 opacity-0 [--animation-delay:800ms]">
             Already have an account?{" "}
             <a href="/login" className="text-[#ac8eff] hover:underline">

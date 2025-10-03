@@ -15,16 +15,18 @@ export interface Activity {
   };
 }
 
-// Single GraphQL endpoint
-const GRAPHQL_API_URL = "https://optimaizer-api.onrender.com/graphql";
+// Separate endpoints
+const AUTH_API_URL = "https://optimaizer-api.onrender.com/graphql/auth";
+const ACTIVITY_API_URL = "https://optimaizer-api.onrender.com/graphql/activity";
 
-// Generic fetch function
+// Generic GraphQL fetch
 async function graphqlRequest<T>(
+  url: string,
   query: string,
   variables?: Record<string, any>,
   token?: string
 ): Promise<T> {
-  const response = await fetch(GRAPHQL_API_URL, {
+  const res = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -33,19 +35,19 @@ async function graphqlRequest<T>(
     body: JSON.stringify({ query, variables }),
   });
 
-  const { data, errors } = await response.json();
+  const { data, errors } = await res.json();
   if (errors) throw new Error(errors[0].message);
   return data;
 }
 
-// AUTH FUNCTIONS
+// ----------------- AUTH FUNCTIONS -----------------
 export async function login(email: string, password: string): Promise<string> {
   const query = `
     mutation Login($email: String!, $password: String!) {
       login(email: $email, password: $password)
     }
   `;
-  const data = await graphqlRequest<{ login: string }>(query, {
+  const data = await graphqlRequest<{ login: string }>(AUTH_API_URL, query, {
     email,
     password,
   });
@@ -63,7 +65,7 @@ export async function register(email: string, password: string): Promise<User> {
       }
     }
   `;
-  const data = await graphqlRequest<{ register: User }>(query, {
+  const data = await graphqlRequest<{ register: User }>(AUTH_API_URL, query, {
     email,
     password,
   });
@@ -81,11 +83,16 @@ export async function getMe(token: string): Promise<User> {
       }
     }
   `;
-  const data = await graphqlRequest<{ me: User }>(query, undefined, token);
+  const data = await graphqlRequest<{ me: User }>(
+    AUTH_API_URL,
+    query,
+    undefined,
+    token
+  );
   return data.me;
 }
 
-// ACTIVITY FUNCTIONS
+// ----------------- ACTIVITY FUNCTIONS -----------------
 export async function getActivities(token: string): Promise<Activity[]> {
   const query = `
     query {
@@ -101,6 +108,7 @@ export async function getActivities(token: string): Promise<Activity[]> {
     }
   `;
   const data = await graphqlRequest<{ activities: Activity[] }>(
+    ACTIVITY_API_URL,
     query,
     undefined,
     token
@@ -126,6 +134,7 @@ export async function createActivity(
     }
   `;
   const data = await graphqlRequest<{ create_activity: Activity }>(
+    ACTIVITY_API_URL,
     query,
     { activity },
     token
@@ -152,6 +161,7 @@ export async function updateActivity(
     }
   `;
   const data = await graphqlRequest<{ update_activity: Activity }>(
+    ACTIVITY_API_URL,
     query,
     { id, activity },
     token
@@ -168,6 +178,7 @@ export async function deleteActivity(token: string, id: number): Promise<void> {
     }
   `;
   const data = await graphqlRequest<{ delete_activity: { success: boolean } }>(
+    ACTIVITY_API_URL,
     query,
     { id },
     token
