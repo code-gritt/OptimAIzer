@@ -1,8 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+# Strawberry GraphQLRouter
 from core.routes.auth import graphql_app as auth_graphql_app
-from core.routes.oauth import router as oauth_router
+# Graphene GraphQLApp
 from core.routes.activity import graphql_app as activity_graphql_app
+from core.routes.oauth import router as oauth_router
 from core.models.user import Base as UserBase
 from core.models.activity import Base as ActivityBase
 from core.dependencies.db import engine
@@ -26,9 +28,9 @@ app.add_middleware(
 UserBase.metadata.create_all(bind=engine)
 ActivityBase.metadata.create_all(bind=engine)
 
-# Mount GraphQL apps
-app.mount("/graphql/auth", auth_graphql_app)
-app.mount("/graphql/activity", activity_graphql_app)
+# Mount GraphQL apps as separate endpoints
+app.mount("/graphql/auth", auth_graphql_app)  # For login, register, me
+app.mount("/graphql/activity", activity_graphql_app)  # For activities
 
 # Mount OAuth routes
 app.include_router(oauth_router, prefix="/oauth")

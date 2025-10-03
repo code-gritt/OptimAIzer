@@ -1,5 +1,3 @@
-const API_URL = "https://optimaizer-api.onrender.com/graphql";
-
 export interface User {
   id: number;
   email: string;
@@ -17,14 +15,35 @@ export interface Activity {
   };
 }
 
-export async function register(email: string, password: string): Promise<User> {
-  const response = await fetch(API_URL, {
+const AUTH_API_URL = "https://optimaizer-api.onrender.com/graphql/auth";
+const ACTIVITY_API_URL = "https://optimaizer-api.onrender.com/graphql/activity";
+
+export async function login(email: string, password: string): Promise<string> {
+  const response = await fetch(AUTH_API_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       query: `
-        mutation {
-          register(email: "${email}", password: "${password}") {
+        mutation Login($email: String!, $password: String!) {
+          login(email: $email, password: $password)
+        }
+      `,
+      variables: { email, password },
+    }),
+  });
+  const { data, errors } = await response.json();
+  if (errors) throw new Error(errors[0].message);
+  return data.login;
+}
+
+export async function register(email: string, password: string): Promise<User> {
+  const response = await fetch(AUTH_API_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      query: `
+        mutation Register($email: String!, $password: String!) {
+          register(email: $email, password: $password) {
             id
             email
             role
@@ -32,37 +51,16 @@ export async function register(email: string, password: string): Promise<User> {
           }
         }
       `,
+      variables: { email, password },
     }),
   });
-
   const { data, errors } = await response.json();
   if (errors) throw new Error(errors[0].message);
-  return data.register; // directly the UserType
-}
-
-export async function login(
-  email: string,
-  password: string
-): Promise<{ token: string }> {
-  const response = await fetch(API_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      query: `
-        mutation {
-          login(email: "${email}", password: "${password}")
-        }
-      `,
-    }),
-  });
-
-  const { data, errors } = await response.json();
-  if (errors) throw new Error(errors[0].message);
-  return { token: data.login }; // login returns token string only
+  return data.register;
 }
 
 export async function getMe(token: string): Promise<User> {
-  const response = await fetch(API_URL, {
+  const response = await fetch(AUTH_API_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -81,14 +79,13 @@ export async function getMe(token: string): Promise<User> {
       `,
     }),
   });
-
   const { data, errors } = await response.json();
   if (errors) throw new Error(errors[0].message);
   return data.me;
 }
 
 export async function getActivities(token: string): Promise<Activity[]> {
-  const response = await fetch(API_URL, {
+  const response = await fetch(ACTIVITY_API_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -119,7 +116,7 @@ export async function createActivity(
   token: string,
   activity: string
 ): Promise<Activity> {
-  const response = await fetch(API_URL, {
+  const response = await fetch(ACTIVITY_API_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -152,7 +149,7 @@ export async function updateActivity(
   id: number,
   activity: string
 ): Promise<Activity> {
-  const response = await fetch(API_URL, {
+  const response = await fetch(ACTIVITY_API_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -181,7 +178,7 @@ export async function updateActivity(
 }
 
 export async function deleteActivity(token: string, id: number): Promise<void> {
-  const response = await fetch(API_URL, {
+  const response = await fetch(ACTIVITY_API_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
